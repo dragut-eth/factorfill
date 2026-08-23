@@ -4,16 +4,37 @@ import AppKit
 final class MenuBarController: NSObject {
 
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    private var axMonitor: Timer?
+    private var lastAXTrusted = Filler.accessibilityTrusted
 
     override init() {
         super.init()
-        showIdleIcon()
+        refreshIcon()
         rebuildMenu()
+        // Accessibility is granted outside the app (System Settings), so poll for
+        // the change and update the icon/menu when it flips.
+        axMonitor = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            let trusted = Filler.accessibilityTrusted
+            if trusted != self.lastAXTrusted {
+                self.lastAXTrusted = trusted
+                self.refreshIcon()
+                self.rebuildMenu()
+            }
+        }
     }
 
-    /// The cube mark, dimmed when disabled.
-    private func showIdleIcon() {
-        statusItem.button?.image = IconRenderer.menuBarIcon(dimmed: !Prefs.enabled)
+    private func iconState() -> IconRenderer.State {
+        if !Filler.accessibilityTrusted { return .needsAttention }
+        return Prefs.enabled ? .active : .disabled
+    }
+
+    /// The cube mark, reflecting current state (filled / dimmed / outline+!).
+    private func refreshIcon() {
+        statusItem.button?.image = IconRenderer.menuBarIcon(iconState())
+        statusItem.button?.toolTip = Filler.accessibilityTrusted
+            ? "FactorFill"
+            : "FactorFill needs Accessibility permission to fill codes"
     }
 
     private func rebuildMenu() {
@@ -76,7 +97,7 @@ final class MenuBarController: NSObject {
 
     @objc private func toggleEnabled() {
         Prefs.enabled.toggle()
-        showIdleIcon()
+        refreshIcon()
         rebuildMenu()
     }
 
@@ -92,6 +113,7 @@ final class MenuBarController: NSObject {
                 NSWorkspace.shared.open(url)
             }
         }
+        refreshIcon()
         rebuildMenu()
     }
 
@@ -120,7 +142,7 @@ final class MenuBarController: NSObject {
         statusItem.button?.image = NSImage(systemSymbolName: "checkmark.circle.fill",
                                            accessibilityDescription: "Filled")
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
-            self?.showIdleIcon()
+            self?.refreshIcon()
         }
     }
 }
