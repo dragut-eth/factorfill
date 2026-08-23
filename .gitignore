@@ -1,0 +1,15 @@
+# Build output
+FactorFill.app/
+*.app/
+build/
+DerivedData/
+
+# macOS
+.DS_Store
+
+# POC archive build artifacts (keep sources, ignore builds)
+poc/**/*.app/
+poc/**/DerivedData/
+
+# Editor
+*.swp
