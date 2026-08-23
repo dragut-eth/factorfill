@@ -17,6 +17,10 @@ swiftc -O "$DIR"/Sources/FactorFill/*.swift \
 
 cp "$DIR/Resources/Info.plist" "$APP/Contents/Info.plist"
 
+# App icon
+mkdir -p "$APP/Contents/Resources"
+cp "$DIR/Resources/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
+
 # Sign with a stable identity so macOS keeps the Accessibility grant across
 # rebuilds. Falls back to ad-hoc if the cert isn't present.
 xattr -cr "$APP"
