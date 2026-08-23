@@ -4,16 +4,16 @@ import AppKit
 final class MenuBarController: NSObject {
 
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-    private let idleSymbol = "key.fill"
 
     override init() {
         super.init()
-        setIcon(idleSymbol)
+        showIdleIcon()
         rebuildMenu()
     }
 
-    private func setIcon(_ symbol: String) {
-        statusItem.button?.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "FactorFill")
+    /// The cube mark, dimmed when disabled.
+    private func showIdleIcon() {
+        statusItem.button?.image = IconRenderer.menuBarIcon(dimmed: !Prefs.enabled)
     }
 
     private func rebuildMenu() {
@@ -76,7 +76,7 @@ final class MenuBarController: NSObject {
 
     @objc private func toggleEnabled() {
         Prefs.enabled.toggle()
-        setIcon(Prefs.enabled ? idleSymbol : "key.slash.fill")
+        showIdleIcon()
         rebuildMenu()
     }
 
@@ -117,10 +117,10 @@ final class MenuBarController: NSObject {
 
     /// Briefly flips the menu-bar icon to a checkmark after a successful fill.
     func flash() {
-        setIcon("checkmark.circle.fill")
+        statusItem.button?.image = NSImage(systemSymbolName: "checkmark.circle.fill",
+                                           accessibilityDescription: "Filled")
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
-            guard let self else { return }
-            self.setIcon(Prefs.enabled ? self.idleSymbol : "key.slash.fill")
+            self?.showIdleIcon()
         }
     }
 }
