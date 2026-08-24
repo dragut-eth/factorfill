@@ -109,9 +109,11 @@ final class MenuBarController: NSObject {
     @objc private func grantAX() {
         if !Filler.accessibilityTrusted {
             Filler.promptAccessibility()
-            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-                NSWorkspace.shared.open(url)
-            }
+        }
+        // Always open the Accessibility pane so this item works whether granted
+        // (to review/revoke) or not (to grant).
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+            NSWorkspace.shared.open(url)
         }
         refreshIcon()
         rebuildMenu()
