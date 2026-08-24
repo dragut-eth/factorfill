@@ -72,9 +72,11 @@ Everything lives in the menu-bar icon (🔑):
 Sources/FactorFill/   Swift sources
 Resources/Info.plist  bundle metadata (LSUIElement menu-bar app)
 build.sh              compile + sign into FactorFill.app
-poc/                  original proof-of-concept experiments (reference)
+scripts/              app-icon generation
 ```
 
 ## License
 
-MIT
+[Zero-Clause BSD (0BSD)](LICENSE) — do anything you want with it, no attribution required, no warranty.
+
+Source-available, provided as-is. Not an actively maintained project: no support, and PRs/issues may be ignored.
