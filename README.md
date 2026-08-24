@@ -19,18 +19,37 @@ Then it synthesizes ⌘V into the focused field.
 
 ## Requirements
 
-- macOS 13+
+- macOS 13 (Ventura) or later
+- Xcode command-line tools (for `swiftc`). If you don't have them: `xcode-select --install`
 - Handoff / Universal Clipboard set up between your iPhone and Mac (same Apple ID, Bluetooth + Wi-Fi on, Handoff enabled)
 - **Accessibility permission** (required to type into other apps)
 
 ## Build
 
 ```bash
-./build.sh
+git clone https://github.com/dragut-eth/factorfill.git
+cd factorfill
+bash build.sh
 open FactorFill.app
 ```
 
-On first launch, grant Accessibility when prompted (**System Settings → Privacy & Security → Accessibility → enable FactorFill**), then relaunch.
+### First run
+
+1. The cube appears in your menu bar. It shows as an **outline cube + "!"** until you grant permission.
+2. Click the menu-bar icon → **Grant Accessibility…** → in System Settings, enable **FactorFill** under Privacy & Security → Accessibility.
+3. **Quit and relaunch** (`open FactorFill.app`) so it picks up the permission. The icon turns solid when it's ready.
+
+### Use it
+
+- Make sure Handoff/Universal Clipboard works between your Mac and iPhone (see Requirements).
+- In the menu, **Fill in these apps** lists where filling is allowed (Safari + Chrome by default; "Add frontmost app" to add others).
+- Click into a login/2FA field in an allowed app, copy a code on your iPhone → it types into the field automatically.
+
+### Note on code signing
+
+`build.sh` tries to sign with the original author's development certificate. If that cert isn't in your keychain, it **automatically falls back to ad-hoc signing** — the app still builds and runs, but macOS treats each rebuild as a new app, so you'll need to re-grant Accessibility after every rebuild.
+
+To sign stably with your own identity (so the grant persists across rebuilds), list your identities with `security find-identity -v -p codesigning` and set the `IDENTITY=` line in `build.sh` to your `"Apple Development: …"` identity.
 
 ## Usage
 
