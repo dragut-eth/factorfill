@@ -13,3 +13,6 @@ poc/**/DerivedData/
 
 # Editor
 *.swp
+
+# Distribution archives
+*.zip
