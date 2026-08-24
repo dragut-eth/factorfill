@@ -16,3 +16,6 @@ poc/**/DerivedData/
 
 # Distribution archives
 *.zip
+
+# Local-only POC archive
+poc/
