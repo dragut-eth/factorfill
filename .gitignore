@@ -22,3 +22,6 @@ poc/
 
 # Local environment (signing identity, etc.) — keep .env.example tracked
 .env
+
+# Release build output
+dist/

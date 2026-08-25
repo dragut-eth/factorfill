@@ -51,14 +51,15 @@ open FactorFill.app
 
 By default `build.sh` **ad-hoc signs** the app — it builds and runs fine, but macOS treats each rebuild as a new app, so you'll re-grant Accessibility after every rebuild.
 
-To sign stably with your own identity (so the grant persists across rebuilds), set `CODESIGN_IDENTITY` to your `"Apple Development: …"` identity. List yours with `security find-identity -v -p codesigning`, then:
+To sign stably with your own identity (so the grant persists across rebuilds), put your `"Apple Development: …"` identity in a local `.env` — `build.sh` sources it automatically:
 
 ```bash
-export CODESIGN_IDENTITY="Apple Development: Your Name (TEAMID)"
+cp .env.example .env
+# edit .env: CODESIGN_IDENTITY="Apple Development: Your Name (TEAMID)"
 bash build.sh
 ```
 
-Add that `export` to your shell profile to make it permanent.
+List your identities with `security find-identity -v -p codesigning`. `.env` is gitignored.
 
 ## Usage
 
@@ -68,6 +69,25 @@ Everything lives in the menu-bar icon (🔑):
 - **Fill in these apps** — the allow-list; "Add frontmost app" adds whatever app you're currently in
 - **Launch at login**
 - **Grant Accessibility…** — shows status / opens settings
+
+## Releasing (maintainer)
+
+A shareable, double-click-friendly build must be signed with a **Developer ID Application** cert and **notarized** by Apple. One-time setup:
+
+1. In `.env`, set `RELEASE_IDENTITY="Developer ID Application: … (TEAMID)"`.
+2. Store a notarization credential once (needs an [app-specific password](https://support.apple.com/102654) for the Apple ID that owns the Developer ID cert):
+   ```bash
+   xcrun notarytool store-credentials factorfill-notary \
+     --apple-id "you@example.com" --team-id "TEAMID" --password "app-specific-password"
+   ```
+
+Then, per release:
+```bash
+bash notarize.sh v0.1.0                 # build → sign → notarize → staple → dist/FactorFill-v0.1.0.zip
+gh release create v0.1.0 dist/FactorFill-*.zip --notes "…"
+```
+
+Everyday development needs none of this — `build.sh` alone is enough.
 
 ## Limitations
 
