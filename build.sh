@@ -31,14 +31,19 @@ cp "$DIR/Resources/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 # rebuilds. Unset → ad-hoc signing (works, but macOS re-prompts for
 # Accessibility after each rebuild). List identities:
 #   security find-identity -v -p codesigning
-xattr -cr "$APP"
-IDENTITY="${CODESIGN_IDENTITY:-}"
-if [ -n "$IDENTITY" ] && security find-identity -v -p codesigning | grep -q "$IDENTITY"; then
-    codesign --force --sign "$IDENTITY" "$APP"
-    echo "Signed with: $IDENTITY"
+# SKIP_SIGN=1 leaves the app unsigned (notarize.sh signs a clean copy itself).
+if [ "${SKIP_SIGN:-}" = "1" ]; then
+    echo "Skipped signing (SKIP_SIGN=1)"
 else
-    codesign --force --sign - "$APP"
-    echo "Signed ad-hoc (set CODESIGN_IDENTITY for a stable signature)"
+    xattr -cr "$APP"
+    IDENTITY="${CODESIGN_IDENTITY:-}"
+    if [ -n "$IDENTITY" ] && security find-identity -v -p codesigning | grep -q "$IDENTITY"; then
+        codesign --force --sign "$IDENTITY" "$APP"
+        echo "Signed with: $IDENTITY"
+    else
+        codesign --force --sign - "$APP"
+        echo "Signed ad-hoc (set CODESIGN_IDENTITY for a stable signature)"
+    fi
 fi
 
 echo "Built: $APP"
