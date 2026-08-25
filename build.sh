@@ -5,6 +5,11 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 APP="$DIR/FactorFill.app"
 BIN="$APP/Contents/MacOS/FactorFill"
 
+# Local, untracked config (e.g. CODESIGN_IDENTITY). See .env.example.
+if [ -f "$DIR/.env" ]; then
+    set -a; . "$DIR/.env"; set +a
+fi
+
 echo "Building FactorFill.app…"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"

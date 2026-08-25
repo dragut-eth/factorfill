@@ -19,3 +19,6 @@ poc/**/DerivedData/
 
 # Local-only POC archive
 poc/
+
+# Local environment (signing identity, etc.) — keep .env.example tracked
+.env
