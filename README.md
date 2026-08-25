@@ -47,9 +47,16 @@ open FactorFill.app
 
 ### Note on code signing
 
-`build.sh` tries to sign with the original author's development certificate. If that cert isn't in your keychain, it **automatically falls back to ad-hoc signing** — the app still builds and runs, but macOS treats each rebuild as a new app, so you'll need to re-grant Accessibility after every rebuild.
+By default `build.sh` **ad-hoc signs** the app — it builds and runs fine, but macOS treats each rebuild as a new app, so you'll re-grant Accessibility after every rebuild.
 
-To sign stably with your own identity (so the grant persists across rebuilds), list your identities with `security find-identity -v -p codesigning` and set the `IDENTITY=` line in `build.sh` to your `"Apple Development: …"` identity.
+To sign stably with your own identity (so the grant persists across rebuilds), set `CODESIGN_IDENTITY` to your `"Apple Development: …"` identity. List yours with `security find-identity -v -p codesigning`, then:
+
+```bash
+export CODESIGN_IDENTITY="Apple Development: Your Name (TEAMID)"
+bash build.sh
+```
+
+Add that `export` to your shell profile to make it permanent.
 
 ## Usage
 

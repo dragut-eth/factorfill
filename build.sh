@@ -21,16 +21,19 @@ cp "$DIR/Resources/Info.plist" "$APP/Contents/Info.plist"
 mkdir -p "$APP/Contents/Resources"
 cp "$DIR/Resources/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 
-# Sign with a stable identity so macOS keeps the Accessibility grant across
-# rebuilds. Falls back to ad-hoc if the cert isn't present.
+# Signing. Set CODESIGN_IDENTITY to your "Apple Development: …" identity for a
+# stable signature, which lets macOS keep the Accessibility grant across
+# rebuilds. Unset → ad-hoc signing (works, but macOS re-prompts for
+# Accessibility after each rebuild). List identities:
+#   security find-identity -v -p codesigning
 xattr -cr "$APP"
-IDENTITY="Apple Development: Xavier Cany (VY6KZKP7W7)"
-if security find-identity -v -p codesigning | grep -q "$IDENTITY"; then
+IDENTITY="${CODESIGN_IDENTITY:-}"
+if [ -n "$IDENTITY" ] && security find-identity -v -p codesigning | grep -q "$IDENTITY"; then
     codesign --force --sign "$IDENTITY" "$APP"
     echo "Signed with: $IDENTITY"
 else
     codesign --force --sign - "$APP"
-    echo "Signed ad-hoc (stable cert not found — Accessibility grant won't persist across rebuilds)"
+    echo "Signed ad-hoc (set CODESIGN_IDENTITY for a stable signature)"
 fi
 
 echo "Built: $APP"
