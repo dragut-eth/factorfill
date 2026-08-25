@@ -1,5 +1,7 @@
 # FactorFill
 
+> **Source-available, provided as-is.** This is a personal project whose source happens to be public — not an open-source project. No support, no warranty, and issues/PRs may be ignored. Licensed under [0BSD](LICENSE): do whatever you want with it, at your own risk.
+
 A low-profile macOS menu-bar app that **auto-fills 2FA codes sent from your iPhone**.
 
 Copy a one-time code in your phone's authenticator → [Universal Clipboard (Handoff)](https://support.apple.com/en-us/102430) syncs it to your Mac → FactorFill types it into the focused field of an allowed app (Safari/Chrome by default). Works in **any** app — including Chrome — because it types into whatever field has focus, rather than relying on Apple's AutoFill (which is Safari/native-only).
