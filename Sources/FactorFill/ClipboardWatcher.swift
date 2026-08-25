@@ -29,10 +29,11 @@ final class ClipboardWatcher {
     }
 
     private func poll() {
-        guard Prefs.enabled else { return }
         let pb = NSPasteboard.general
         guard pb.changeCount != lastChangeCount else { return }
-        lastChangeCount = pb.changeCount
+        lastChangeCount = pb.changeCount   // consume even when disabled, so re-enabling won't fill a stale code
+
+        guard Prefs.enabled else { return }
 
         let types = pb.types ?? []
         let isRemote = types.contains { $0.rawValue == Self.remoteType }

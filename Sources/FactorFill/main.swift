@@ -10,7 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Filler.promptAccessibility()          // ask once on first launch
-        watcher.onFill = { [weak self] code in
+        watcher.onFill = { [weak self] _ in
             self?.menu.flash()
         }
         watcher.start()
