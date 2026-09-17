@@ -6,6 +6,12 @@ A low-profile macOS menu-bar app that **auto-fills 2FA codes sent from your iPho
 
 Copy a one-time code in your phone's authenticator → [Universal Clipboard (Handoff)](https://support.apple.com/en-us/102430) syncs it to your Mac → FactorFill types it into the focused field of an allowed app (Safari/Chrome by default). Works in **any** app — including Chrome — because it types into whatever field has focus, rather than relying on Apple's AutoFill (which is Safari/native-only).
 
+## Download
+
+Grab the latest signed & notarized build from the [**Releases**](https://github.com/dragut-eth/factorfill/releases/latest) page — download the `.zip`, unzip, and drag **FactorFill.app** to Applications. It's Developer ID–signed and notarized, so it opens with no Gatekeeper warning. On first launch, grant Accessibility (see [First run](#first-run)).
+
+Prefer to build from source? See [Build](#build).
+
 ## How it works
 
 FactorFill polls the clipboard and fills only when **all** of these are true, checked cheapest-first so it reads clipboard *content* only when necessary:
